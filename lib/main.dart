@@ -14,7 +14,6 @@ class BlocDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bloc Demo',
-
       home: BlocWidget(),
     );
   }
@@ -23,34 +22,39 @@ class BlocDemo extends StatelessWidget {
 class BlocWidget extends StatelessWidget {
   BlocWidget({super.key});
 
-
-
-
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocWorcker()..add(BlocPlusEvent());
     return BlocProvider<BlocWorcker>(
-      create: (conrext) => BlocWorcker(),
-      child: BlocBuilder<BlocWorcker, int>(
-        builder: (context, state) {
-          return Scaffold(
-          floatingActionButton: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(onPressed: (){
-                BlocProvider.of<BlocWorcker>(context).add(BlocPlusEvent());
-              }, icon: Icon(Icons.add)),
-              IconButton(onPressed: (){
-                BlocProvider.of<BlocWorcker>(context).add(BlocMinusEvent());
-              }, icon: Icon(Icons.minimize))
-            ],
-          ),
-          body: Center(
-            child: Text(state.toString(), style: TextStyle(fontSize: 36),),
-          ),
-        );
-        }
-      ),
-    );
+      //add event on started
+      create: (conrext) => bloc,
+      child:              Scaffold(
+              floatingActionButton: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        bloc.add(BlocPlusEvent());
+                      },
+                      icon: Icon(Icons.add)),
+                  IconButton(
+                      onPressed: () {
+                        bloc.add(BlocMinusEvent());
+                      },
+                      icon: Icon(Icons.minimize))
+                ],
+              ),
+              body: Center(
+                child: BlocBuilder<BlocWorcker, int>(
+                  bloc: bloc,
+                  builder: (context, state) {
+                    return Text(
+                      state.toString(),
+                      style: TextStyle(fontSize: 36),
+                    );
+                  },
+                ),
+              ),
+    ));
   }
 }
-
