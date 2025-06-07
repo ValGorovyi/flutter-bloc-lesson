@@ -1,4 +1,7 @@
-import 'package:b_l/bloc-f/bloc-file.dart';
+import 'package:b_l/bloc-f/bloc-counter.dart';
+import 'package:b_l/bloc-f/users-bloc/users-event-b.dart';
+import 'package:b_l/bloc-f/users-bloc/users-state-b.dart';
+import 'package:b_l/bloc-f/users-bloc/users-worcker-b.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,39 +17,50 @@ class BlocDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bloc Demo',
-      home: BlocWidget(),
+      home: MyBlocWidget(),
     );
   }
 }
 
-class BlocWidget extends StatelessWidget {
-  BlocWidget({super.key});
+class MyBlocWidget extends StatelessWidget {
+  const MyBlocWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bloc = BlocWorcker()..add(BlocPlusEvent());
-    return BlocProvider<BlocWorcker>(
-      //add event on started
-      create: (conrext) => bloc,
-      child:              Scaffold(
-              floatingActionButton: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        bloc.add(BlocPlusEvent());
-                      },
-                      icon: Icon(Icons.add)),
-                  IconButton(
-                      onPressed: () {
-                        bloc.add(BlocMinusEvent());
-                      },
-                      icon: Icon(Icons.minimize))
-                ],
-              ),
-              body: Center(
-                child: BlocBuilder<BlocWorcker, int>(
-                  bloc: bloc,
+    final counterBloc = CounterBlocWorcker()..add(BlocPlusEvent());
+    final usersBloc = UserBlocWorcker();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CounterBlocWorcker>(create: (context) => counterBloc),
+        BlocProvider<UserBlocWorcker>(create: (context) => usersBloc)
+      ],
+      child: Scaffold(
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                onPressed: () {
+                  counterBloc.add(BlocPlusEvent());
+                },
+                icon: Icon(Icons.add)),
+            IconButton(
+                onPressed: () {
+                  counterBloc.add(BlocMinusEvent());
+                },
+                icon: Icon(Icons.minimize)),
+            IconButton(
+                onPressed: () {
+                  usersBloc.add(CreateUsEvent(counterBloc.state));
+                },
+                icon: Icon(Icons.person_2))
+          ],
+        ),
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              children: [
+                BlocBuilder<CounterBlocWorcker, int>(
+                  bloc: counterBloc,
                   builder: (context, state) {
                     return Text(
                       state.toString(),
@@ -54,7 +68,21 @@ class BlocWidget extends StatelessWidget {
                     );
                   },
                 ),
-              ),
-    ));
+                BlocBuilder<UserBlocWorcker, UsersStateB>(
+                    builder: (context, UsSt) {
+                  return Column(
+                    children: [
+                      if (UsSt is UserLoadingState) CircularProgressIndicator(),
+                      if (UsSt is UserLoadedState)
+                        ...UsSt.users.map((elem) => Text(elem.name)),
+                    ],
+                  );
+                })
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
