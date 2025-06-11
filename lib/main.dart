@@ -35,6 +35,9 @@ class MyBlocWidget extends StatelessWidget {
         BlocProvider<UserBlocWorcker>(create: (context) => usersBloc)
       ],
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Bloc lesson'),
+        ),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -42,17 +45,22 @@ class MyBlocWidget extends StatelessWidget {
                 onPressed: () {
                   counterBloc.add(BlocPlusEvent());
                 },
-                icon: Icon(Icons.add)),
+                icon: Icon(Icons.plus_one)),
             IconButton(
                 onPressed: () {
                   counterBloc.add(BlocMinusEvent());
                 },
-                icon: Icon(Icons.minimize)),
+                icon: Icon(Icons.exposure_neg_1_outlined)),
             IconButton(
                 onPressed: () {
                   usersBloc.add(CreateUsEvent(counterBloc.state));
                 },
-                icon: Icon(Icons.person_2))
+                icon: Icon(Icons.person_2)),
+            IconButton(
+                onPressed: () {
+                  usersBloc.add(CreateJobsEvent(counterBloc.state));
+                },
+                icon: Icon(Icons.work_outline))
           ],
         ),
         body: SafeArea(
@@ -69,12 +77,16 @@ class MyBlocWidget extends StatelessWidget {
                   },
                 ),
                 BlocBuilder<UserBlocWorcker, UsersStateB>(
-                    builder: (context, UsSt) {
+                    builder: (context, usersSt) {
+                  final users = usersSt.users;
+                  final jobs = usersSt.jobs;
                   return Column(
                     children: [
-                      if (UsSt is UserLoadingState) CircularProgressIndicator(),
-                      if (UsSt is UserLoadedState)
-                        ...UsSt.users.map((elem) => Text(elem.name)),
+                      if (usersSt.isLoading) CircularProgressIndicator(),
+                      if (users.isNotEmpty)
+                        ...users.map((elem) => Text(elem.name)),
+                      if (jobs.isNotEmpty) 
+                        ...jobs.map((elem) => Text(elem.name)),
                     ],
                   );
                 })
