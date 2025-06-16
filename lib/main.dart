@@ -40,6 +40,12 @@ class MyBlocWidget extends StatelessWidget {
       ],
       // obertka Builder dla polucheniya bloca cherez context
       child: Builder(builder: (context) {
+// esli na etom urovne napisat counter watch, to rerender vsego i kazhdiy raz. dazhe knopok iconButton
+
+        // final counterBl = context.watch<CounterBlocWorcker>(); // its bad
+
+        //norm - ispolzovat BlocProvider.of<>(context). adekvatniy rerender
+        final counterBloc = BlocProvider.of<CounterBlocWorcker>(context);
         return Scaffold(
           appBar: AppBar(
             title: Text('Bloc lesson'),
@@ -51,15 +57,17 @@ class MyBlocWidget extends StatelessWidget {
                   onPressed: () {
                     // without needed context
                     // dla dobavleniya kontexta - obernut vse pod MultiBlocProvider v Builder
-                    final counterBloc = context.read<CounterBlocWorcker>();
+                    // final counterBloc = context.read<CounterBlocWorcker>();
+                    // demo
 
+                    // counterBl.add(BlocPlusEvent());
                     counterBloc.add(BlocPlusEvent());
                   },
                   icon: Icon(Icons.plus_one)),
               IconButton(
                   onPressed: () {
                     // poluchit counterBloc cherez blocProvider
-                    final counterBloc = context.read<CounterBlocWorcker>();
+                    // final counterBloc = context.read<CounterBlocWorcker>();
                     counterBloc.add(BlocMinusEvent());
                   },
                   icon: Icon(Icons.exposure_neg_1_outlined)),
@@ -107,7 +115,7 @@ class MyBlocWidget extends StatelessWidget {
                   ),
                   BlocBuilder<UserBlocWorcker, UsersStateB>(
                       builder: (context, usersSt) {
-                    final users = usersSt.users;
+                    // final users = usersSt.users;
                     final jobs = usersSt.jobs;
                     return Column(
                       children: [
