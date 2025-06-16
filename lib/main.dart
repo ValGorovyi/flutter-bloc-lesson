@@ -29,7 +29,6 @@ class MyBlocWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // final counterBloc = CounterBlocWorcker()..add(BlocPlusEvent());
     // final usersBloc = UserBlocWorcker();
 
@@ -40,94 +39,92 @@ class MyBlocWidget extends StatelessWidget {
         BlocProvider<UserBlocWorcker>(create: (context) => UserBlocWorcker()),
       ],
       // obertka Builder dla polucheniya bloca cherez context
-      child: Builder(
-        builder: (context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Bloc lesson'),
-            ),
-            floatingActionButton: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      // without needed context
-                      // dla dobavleniya kontexta - obernut vse pod MultiBlocProvider v Builder
-                      final counterBloc = context.read<CounterBlocWorcker>();
-          
-                      counterBloc.add(BlocPlusEvent());
-                    },
-                    icon: Icon(Icons.plus_one)),
-                IconButton(
-                    onPressed: () {
-                      // poluchit counterBloc cherez blocProvider
-                      final counterBloc = context.read<CounterBlocWorcker>();
-                      counterBloc.add(BlocMinusEvent());
-                    },
-                    icon: Icon(Icons.exposure_neg_1_outlined)),
-                IconButton(
-                    onPressed: () {
-                      final usersBloc = context.read<UserBlocWorcker>();
-                      usersBloc.add(CreateUsEvent(context.read<CounterBlocWorcker>().state));
-                    },
-                    icon: Icon(Icons.person_2)),
-                IconButton(
-                    onPressed: () {
-                      final usersBloc = context.read<UserBlocWorcker>();
+      child: Builder(builder: (context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Bloc lesson'),
+          ),
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    // without needed context
+                    // dla dobavleniya kontexta - obernut vse pod MultiBlocProvider v Builder
+                    final counterBloc = context.read<CounterBlocWorcker>();
 
-                      usersBloc.add(CreateJobsEvent(context.read<CounterBlocWorcker>().state));
-                    },
-                    icon: Icon(Icons.work_outline))
-              ],
-            ),
-            body: SafeArea(
-              child: Center(
-                child: Column(
-                  children: [
-                    BlocBuilder<CounterBlocWorcker, int>(
-          
-                      builder: (context, state) {
+                    counterBloc.add(BlocPlusEvent());
+                  },
+                  icon: Icon(Icons.plus_one)),
+              IconButton(
+                  onPressed: () {
+                    // poluchit counterBloc cherez blocProvider
+                    final counterBloc = context.read<CounterBlocWorcker>();
+                    counterBloc.add(BlocMinusEvent());
+                  },
+                  icon: Icon(Icons.exposure_neg_1_outlined)),
+              IconButton(
+                  onPressed: () {
+                    final usersBloc = context.read<UserBlocWorcker>();
+                    usersBloc.add(CreateUsEvent(
+                        context.read<CounterBlocWorcker>().state));
+                  },
+                  icon: Icon(Icons.person_2)),
+              IconButton(
+                  onPressed: () {
+                    final usersBloc = context.read<UserBlocWorcker>();
 
+                    usersBloc.add(CreateJobsEvent(
+                        context.read<CounterBlocWorcker>().state));
+                  },
+                  icon: Icon(Icons.work_outline))
+            ],
+          ),
+          body: SafeArea(
+            child: Center(
+              child: Column(
+                children: [
+                  BlocBuilder<CounterBlocWorcker, int>(
+                    // buildWhen: (prev, next) {},
+                    builder: (context, state) {
 // naprimer nado vivodit ne tolko counter, no i users
 
-
-                        return Column(
-                          children: [
-
-                            Text(
-                              state.toString(),
-                              style: TextStyle(fontSize: 36),
-                            ),
-                            // cherez context.read ne srabotaet. demo version
-                            if(context.watch<UserBlocWorcker>().state.users.isNotEmpty)
-                            // watch
-                            // vsegda rerender. izmenetiya tyt - rerender, tam - rerender, rerender vsegda
-                              ...context.watch<UserBlocWorcker>().state.users.map((u) => Text(u.name))
-                          ],
-                        );
-                      },
-                    ),
-                    BlocBuilder<UserBlocWorcker, UsersStateB>(
-                        builder: (context, usersSt) {
-                      final users = usersSt.users;
-                      final jobs = usersSt.jobs;
+//poluchaem users iz select
+                      final usersFromSelect = context
+                          .select((UserBlocWorcker us) => us.state.users);
                       return Column(
                         children: [
-                          if (usersSt.isLoading) CircularProgressIndicator(),
-                          // if (users.isNotEmpty)
-                          //   ...users.map((elem) => Text(elem.name)),
-                          if (jobs.isNotEmpty)
-                            ...jobs.map((elem) => Text(elem.name)),
+                          Text(
+                            state.toString(),
+                            style: TextStyle(fontSize: 36),
+                          ),
+                          // cherez context.read ne srabotaet. demo version
+                          if (usersFromSelect.isNotEmpty)
+                            ...usersFromSelect.map((u) => Text(u.name))
                         ],
                       );
-                    })
-                  ],
-                ),
+                    },
+                  ),
+                  BlocBuilder<UserBlocWorcker, UsersStateB>(
+                      builder: (context, usersSt) {
+                    final users = usersSt.users;
+                    final jobs = usersSt.jobs;
+                    return Column(
+                      children: [
+                        if (usersSt.isLoading) CircularProgressIndicator(),
+                        // if (users.isNotEmpty)
+                        //   ...users.map((elem) => Text(elem.name)),
+                        if (jobs.isNotEmpty)
+                          ...jobs.map((elem) => Text(elem.name)),
+                      ],
+                    );
+                  })
+                ],
               ),
             ),
-          );
-        }
-      ),
+          ),
+        );
+      }),
     );
   }
 }
