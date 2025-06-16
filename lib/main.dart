@@ -99,9 +99,10 @@ class MyBlocWidget extends StatelessWidget {
                               style: TextStyle(fontSize: 36),
                             ),
                             // cherez context.read ne srabotaet. demo version
-                            if(context.read<UserBlocWorcker>().state.users.isNotEmpty)
-                            // pererisovka ne proishodit. to est ui ne otobrachaet rezultat. tolko posle pererisovki drugih widgetov 
-                              ...context.read<UserBlocWorcker>().state.users.map((u) => Text(u.name))
+                            if(context.watch<UserBlocWorcker>().state.users.isNotEmpty)
+                            // watch
+                            // vsegda rerender. izmenetiya tyt - rerender, tam - rerender, rerender vsegda
+                              ...context.watch<UserBlocWorcker>().state.users.map((u) => Text(u.name))
                           ],
                         );
                       },
