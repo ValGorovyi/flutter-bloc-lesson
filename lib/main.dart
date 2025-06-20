@@ -5,9 +5,6 @@ import 'package:b_l/bloc-f/users-bloc/users-worcker-b.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-//raznie metody obnovleniya ui
-// context .read / .watch / .select
-// more demonstration, may be no worcked all ui logick
 
 void main() {
   runApp(BlocDemo());
@@ -24,19 +21,21 @@ class BlocDemo extends StatelessWidget {
   }
 }
 
+//bloc listen other bloc. bad practick. but may be
+
 class MyBlocWidget extends StatelessWidget {
   const MyBlocWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final counterBloc = CounterBlocWorcker()..add(BlocPlusEvent());
+    final counterBloc = CounterBlocWorcker()..add(BlocPlusEvent());
     // final usersBloc = UserBlocWorcker();
 
     return MultiBlocProvider(
       providers: [
         BlocProvider<CounterBlocWorcker>(
-            create: (context) => CounterBlocWorcker()..add(BlocPlusEvent())),
-        BlocProvider<UserBlocWorcker>(create: (context) => UserBlocWorcker()),
+            create: (context) => counterBloc),
+        BlocProvider<UserBlocWorcker>(create: (context) => UserBlocWorcker(counterBloc)),
       ],
       // obertka Builder dla polucheniya bloca cherez context
       child: Builder(builder: (context) {
