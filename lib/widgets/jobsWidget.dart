@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Jobs extends StatelessWidget {
   // final BuildContext context;
-  final UserBlocWorcker usersBloc;
-  Jobs({Key? key, 
-  // required this.context
-  required this.usersBloc
+  // final UserBlocWorcker usersBloc;
+  Jobs({
+    Key? key,
+    // required this.context
+    // required this.usersBloc
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -18,18 +19,18 @@ class Jobs extends StatelessWidget {
         title: Text('jobs data'),
       ),
       body: BlocBuilder<UserBlocWorcker, UsersStateB>(
-          bloc: usersBloc,
+          // bloc: usersBloc,
           builder: (context, usersSt) {
-            final jobs = usersSt.jobs;
-            return Column(
-              children: [
-                if (usersSt.isLoading) CircularProgressIndicator(),
-                // if (users.isNotEmpty)
-                //   ...users.map((elem) => Text(elem.name)),
-                if (jobs.isNotEmpty) ...jobs.map((elem) => Text(elem.name)),
-              ],
-            );
-          }),
+        final jobs = usersSt.jobs;
+        return Center(
+          child: Column(
+            children: [
+              if (usersSt.isLoading) CircularProgressIndicator(),
+              if (jobs.isNotEmpty) ...jobs.map((elem) => Text(elem.name)),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
