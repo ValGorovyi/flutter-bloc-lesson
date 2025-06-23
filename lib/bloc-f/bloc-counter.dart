@@ -5,11 +5,11 @@ class CounterBlocWorcker extends Bloc<BlocEvent, int> {
     on<BlocPlusEvent>(_onPlusEvent);
     on<BlocMinusEvent>(_onMinusEvent);
   }
-  _onPlusEvent(BlocPlusEvent, Emitter<int> emit) {
+  _onPlusEvent(BlocPlusEvent ev, Emitter<int> emit) {
     emit(state + 1);
   }
 
-  _onMinusEvent(BlocMinusEvent, Emitter<int> emit) {
+  _onMinusEvent(BlocMinusEvent ev, Emitter<int> emit) {
     emit(state - 1);
   }
 }

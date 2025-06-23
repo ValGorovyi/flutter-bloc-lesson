@@ -64,23 +64,29 @@ class MyBlocWidget extends StatelessWidget {
         ),
         // BlocListener pozvolavet sledit za kakim-to state
         // BlocListener<blocZaKotorimSledim, stateType>
-        floatingActionButton: BlocListener<CounterBlocWorcker, int>(
-          listenWhen: (previousState, currentState) => previousState > currentState , //listenWhen - opredelit kogda proverka bydet proishodit
+
+        //BlocCostumes tozhe daet listener. + builder(dostup k kontextu, dostup k state) {...}
+        floatingActionButton: BlocConsumer<CounterBlocWorcker, int>(
+          listenWhen: (previousState, currentState) =>
+              previousState >
+              currentState, //listenWhen - opredelit kogda proverka bydet proishodit
           listener: (context, state) {
-            if (state == 0) { //proverka proishodit kazhdiy raz 
+            if (state == 0) {
+              //proverka proishodit kazhdiy raz
               Scaffold.of(context).showBottomSheet((context) {
                 return Container(
                   width: double.infinity,
                   height: 35,
                   color: Colors.yellow,
-                  child: Text('now counter state is 0 >> ' + state.toString()),
+                  child: Text('now counter state is 0 >> $state'),
                 );
               });
             }
           },
-          child: Column(
+          builder: (context, state) => Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              Text(state.toString()),
               IconButton(
                   onPressed: () {
                     // without needed context
