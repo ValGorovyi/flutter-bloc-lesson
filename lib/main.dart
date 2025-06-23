@@ -86,7 +86,7 @@ class MyBlocWidget extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (_) => Jobs(
-                                  context: context,
+                                  usersBloc: usersBloc,
                                 )));
 
                     usersBloc.add(CreateJobsEvent(
