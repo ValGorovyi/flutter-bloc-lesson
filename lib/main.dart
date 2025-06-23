@@ -62,47 +62,64 @@ class MyBlocWidget extends StatelessWidget {
         appBar: AppBar(
           title: Text('Bloc lesson'),
         ),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-                onPressed: () {
-                  // without needed context
-                  // dla dobavleniya kontexta - obernut vse pod MultiBlocProvider v Builder
-                  // final counterBloc = context.read<CounterBlocWorcker>();
-                  // demo
+        // BlocListener pozvolavet sledit za kakim-to state
+        // BlocListener<blocZaKotorimSledim, stateType>
+        floatingActionButton: BlocListener<CounterBlocWorcker, int>(
+          listenWhen: (previousState, currentState) => previousState > currentState , //listenWhen - opredelit kogda proverka bydet proishodit
+          listener: (context, state) {
+            if (state == 0) { //proverka proishodit kazhdiy raz 
+              Scaffold.of(context).showBottomSheet((context) {
+                return Container(
+                  width: double.infinity,
+                  height: 35,
+                  color: Colors.yellow,
+                  child: Text('now counter state is 0 >> ' + state.toString()),
+                );
+              });
+            }
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    // without needed context
+                    // dla dobavleniya kontexta - obernut vse pod MultiBlocProvider v Builder
+                    // final counterBloc = context.read<CounterBlocWorcker>();
+                    // demo
 
-                  // counterBl.add(BlocPlusEvent());
-                  counterBloc.add(BlocPlusEvent());
-                },
-                icon: Icon(Icons.plus_one)),
-            IconButton(
-                onPressed: () {
-                  // poluchit counterBloc cherez blocProvider
-                  // final counterBloc = context.read<CounterBlocWorcker>();
-                  counterBloc.add(BlocMinusEvent());
-                },
-                icon: Icon(Icons.exposure_neg_1_outlined)),
-            IconButton(
-                onPressed: () {
-                  final usersBloc = context.read<UserBlocWorcker>();
-                  usersBloc.add(
-                      CreateUsEvent(context.read<CounterBlocWorcker>().state));
-                },
-                icon: Icon(Icons.person_2)),
-            IconButton(
-                onPressed: () {
-                  final usersBloc = context.read<UserBlocWorcker>();
-//samoe plohoe reshenie - tupo peredat context.
+                    // counterBl.add(BlocPlusEvent());
+                    counterBloc.add(BlocPlusEvent());
+                  },
+                  icon: Icon(Icons.plus_one)),
+              IconButton(
+                  onPressed: () {
+                    // poluchit counterBloc cherez blocProvider
+                    // final counterBloc = context.read<CounterBlocWorcker>();
+                    counterBloc.add(BlocMinusEvent());
+                  },
+                  icon: Icon(Icons.exposure_neg_1_outlined)),
+              IconButton(
+                  onPressed: () {
+                    final usersBloc = context.read<UserBlocWorcker>();
+                    usersBloc.add(CreateUsEvent(
+                        context.read<CounterBlocWorcker>().state));
+                  },
+                  icon: Icon(Icons.person_2)),
+              IconButton(
+                  onPressed: () {
+                    final usersBloc = context.read<UserBlocWorcker>();
+                    //samoe plohoe reshenie - tupo peredat context.
 
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => Jobs()));
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => Jobs()));
 
-                  usersBloc.add(CreateJobsEvent(
-                      context.read<CounterBlocWorcker>().state));
-                },
-                icon: Icon(Icons.work_outline))
-          ],
+                    usersBloc.add(CreateJobsEvent(
+                        context.read<CounterBlocWorcker>().state));
+                  },
+                  icon: Icon(Icons.work_outline))
+            ],
+          ),
         ),
         body: SafeArea(
           child: Center(
