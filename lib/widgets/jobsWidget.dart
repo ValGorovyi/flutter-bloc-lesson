@@ -6,11 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class Jobs extends StatelessWidget {
   // final BuildContext context;
   // final UserBlocWorcker usersBloc;
-  Jobs({
-    Key? key,
+  const Jobs({
+    super.key,
     // required this.context
     // required this.usersBloc
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     // final blocFromContextBad = BlocProvider.of<UserBlocWorcker>(context);

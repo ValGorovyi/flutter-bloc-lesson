@@ -43,7 +43,7 @@ class UserBlocWorcker extends Bloc<UsersEventB, UsersStateB> {
     final users = List.generate(
         event.count,
         (index) =>
-            User(id: index.toString(), name: 'user name ' + index.toString()));
+            User(id: index.toString(), name: 'user name $index'));
     emit(state.copyWidth(users: users));
   }
   _onCreateJobs(CreateJobsEvent event, Emitter<UsersStateB> emit) async {
@@ -52,7 +52,7 @@ class UserBlocWorcker extends Bloc<UsersEventB, UsersStateB> {
     final jobs = List.generate(
         event.count,
         (index) =>
-            Job(id: index.toString(), name: 'job ' + index.toString()));
+            Job(id: index.toString(), name: 'job $index'));
     emit(state.copyWidth(jobs: jobs));
   }
 }
