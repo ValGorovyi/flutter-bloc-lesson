@@ -2,9 +2,9 @@ import 'package:b_l/bloc-f/bloc-counter.dart';
 import 'package:b_l/bloc-f/users-bloc/users-event-b.dart';
 import 'package:b_l/bloc-f/users-bloc/users-state-b.dart';
 import 'package:b_l/bloc-f/users-bloc/users-worcker-b.dart';
+import 'package:b_l/widgets/jobsWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 void main() {
   runApp(BlocDemo());
@@ -33,9 +33,9 @@ class MyBlocWidget extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CounterBlocWorcker>(
-            create: (context) => counterBloc),
-        BlocProvider<UserBlocWorcker>(create: (context) => UserBlocWorcker(counterBloc)),
+        BlocProvider<CounterBlocWorcker>(create: (context) => counterBloc),
+        BlocProvider<UserBlocWorcker>(
+            create: (context) => UserBlocWorcker(counterBloc)),
       ],
       // obertka Builder dla polucheniya bloca cherez context
       child: Builder(builder: (context) {
@@ -80,6 +80,14 @@ class MyBlocWidget extends StatelessWidget {
               IconButton(
                   onPressed: () {
                     final usersBloc = context.read<UserBlocWorcker>();
+//samoe plohoe reshenie - tupo peredat context.
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => Jobs(
+                                  context: context,
+                                )));
 
                     usersBloc.add(CreateJobsEvent(
                         context.read<CounterBlocWorcker>().state));
@@ -112,20 +120,9 @@ class MyBlocWidget extends StatelessWidget {
                       );
                     },
                   ),
-                  BlocBuilder<UserBlocWorcker, UsersStateB>(
-                      builder: (context, usersSt) {
-                    // final users = usersSt.users;
-                    final jobs = usersSt.jobs;
-                    return Column(
-                      children: [
-                        if (usersSt.isLoading) CircularProgressIndicator(),
-                        // if (users.isNotEmpty)
-                        //   ...users.map((elem) => Text(elem.name)),
-                        if (jobs.isNotEmpty)
-                          ...jobs.map((elem) => Text(elem.name)),
-                      ],
-                    );
-                  })
+                  // // bloc rabotaet korektno pri takom vizove
+                  // // scafold(scafold(...)) - nelza.
+                  // Jobs(),
                 ],
               ),
             ),
