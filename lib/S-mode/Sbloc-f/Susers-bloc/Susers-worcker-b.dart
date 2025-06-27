@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:b_l/bloc-f/bloc-counter.dart';
-import 'package:b_l/bloc-f/users-bloc/users-event-b.dart';
+import 'package:b_l/S-mode/Sbloc-f/Sbloc-counter.dart';
+import 'package:b_l/S-mode/Sbloc-f/Susers-bloc/Susers-event-b.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'users-state-b.dart';
+import 'Susers-state-b.dart';
 
 class UserBlocWorcker extends Bloc<UsersEventB, UsersStateB> {
 

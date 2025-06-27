@@ -1,5 +1,5 @@
-import 'package:b_l/bloc-f/users-bloc/users-state-b.dart';
-import 'package:b_l/bloc-f/users-bloc/users-worcker-b.dart';
+import 'package:b_l/S-mode/Sbloc-f/Susers-bloc/Susers-state-b.dart';
+import 'package:b_l/S-mode/Sbloc-f/Susers-bloc/Susers-worcker-b.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
