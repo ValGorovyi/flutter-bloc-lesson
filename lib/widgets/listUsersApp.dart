@@ -2,22 +2,29 @@ import 'package:b_l/bloc-elem/blocSearchW.dart';
 import 'package:b_l/bloc-elem/search/blocSearchEvent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:search_user_repo/search_user_repo.dart';
 
 class ListUsersApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<SearchBlocW>(create: (context) => SearchBlocW()),
-        ],
-        child: MaterialApp(
-          theme: ThemeData(
-              textTheme: TextTheme(
-            bodyMedium: TextStyle(fontSize: 35),
-            bodySmall: TextStyle(fontSize: 25),
+    return RepositoryProvider(
+      create: (context) => SearchUserRepo(),
+      child: MultiBlocProvider(
+          providers: [
+            BlocProvider<SearchBlocW>(
+                create: (context) => SearchBlocW(
+                    searchUserRepo:
+                        RepositoryProvider.of<SearchUserRepo>(context))),
+          ],
+          child: MaterialApp(
+            theme: ThemeData(
+                textTheme: TextTheme(
+              bodyMedium: TextStyle(fontSize: 35),
+              bodySmall: TextStyle(fontSize: 25),
+            )),
+            home: AppLevel(),
           )),
-          home: AppLevel(),
-        ));
+    );
   }
 }
 
@@ -48,7 +55,7 @@ class AppLevel extends StatelessWidget {
                 child: ListView.builder(
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(users[index]['username']),
+                  title: Text(users[index].username ?? 'Guest WithOut Name'),
                 );
               },
               itemCount: users.length,
