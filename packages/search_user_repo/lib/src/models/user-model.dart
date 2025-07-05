@@ -9,7 +9,7 @@ class UserModel {
     return UserModel(
       username: json['username'],
       url: json['url'],
-      images: json['images']?['jpg']?['image-url'],
+      images: json['images']?['jpg']?['image_url'],
     );
   }
 }

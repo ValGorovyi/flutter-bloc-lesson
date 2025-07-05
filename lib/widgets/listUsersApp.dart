@@ -1,5 +1,6 @@
 import 'package:b_l/bloc-elem/blocSearchW.dart';
 import 'package:b_l/bloc-elem/search/blocSearchEvent.dart';
+import 'package:b_l/widgets/userInfoScreen/userInfoScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:search_user_repo/search_user_repo.dart';
@@ -54,8 +55,21 @@ class AppLevel extends StatelessWidget {
             Expanded(
                 child: ListView.builder(
               itemBuilder: (context, index) {
+                final UserModel user = users[index];
+
                 return ListTile(
-                  title: Text(users[index].username ?? 'Guest WithOut Name'),
+                  title: Text(user.username ?? 'Guest WithOut Name'),
+                  leading: Hero(
+                      tag: user.username ?? 'NoName',
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(user.images ?? ''),
+                      )),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => UserInfoScreen(user: user)));
+                  },
                 );
               },
               itemCount: users.length,
